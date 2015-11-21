@@ -1,0 +1,124 @@
+<script type="text/javascript">
+
+$(function(){
+
+ $("#organizer").val("<%=organizer%>");
+ $("#venue").val("<%=venue%>");
+
+
+
+})
+
+      
+   
+
+
+
+</script>
+<div class="container-fluid">
+	<div class="col-md-12">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="col-md-12" style="height:400px;">
+					<div class="col-md-6" style="height:400px;">
+						<% activities.forEach( function(model) { %>
+						<div class="panel panel-default" style="height:200px;">
+							<div class="panel-heading">
+								<h3 class="panel-title"><%=model.name%></h3>
+							</div>
+							<div class="panel-body">
+								<div class="col-md-4">
+									<img alt="Bootstrap Image Preview" src="<%=model.image%>" style="height:135px;object-fit:cover;" />
+								</div>
+								<div class="col-md-8">
+									<p>
+										<%=model.shortDes%>
+									</p>
+								</div>
+							</div>
+						</div>
+						<% }); %>
+						<!--
+									<div class="panel panel-default" style="height:200px;">
+
+										<div class="panel-heading">
+
+											<h3 class="panel-title">Panel title</h3>
+										</div>   
+										<div class="panel-body">
+											<div class="col-md-4">
+												<img alt="Bootstrap Image Preview" src="http://lorempixel.com/140/140/"   style=“height:135px;object-fit:cover;”/>
+											</div>
+											<div class="col-md-8">
+												<p >
+													Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
+												</p>
+											</div>
+										</div>
+
+									</div>
+									-->
+					</div>
+					<div class="col-md-6" style="height:400px;">
+						<div class="row">
+							<div class="col-md-12">
+								<ul id="pagination" class="pagination"></ul>
+								<ul class="pagination">
+									<li><a href="/activity/search/?page=<%=Math.max(current-1, 1)%>&<%=queryString%>" aria-label="Previous"> <span aria-hidden="true">&laquo;</span> </a></li>
+									<% for (i = 1; i <= count; i++) { %>
+									<li><a href="/activity/search/?page=<%=i%>&<%=queryString%>"> <%=i%> </a>
+									</li>
+									<%}%>
+									<li><a href="/activity/search/?page=<%=Math.min(current*1+1, count)%>&<%=queryString%>" aria-label="Next"> <span aria-hidden="true">&raquo;</span> </a></li>
+								</ul>
+							</div>
+						</div>
+						<h2>Event Search form</h2>
+						<form class="form-horizontal" role="form" action="/activity/search" method="POST" id="searchForm">
+							<input name="page" value="<%=current%>" type="hidden" id="pageNum">
+							<div class="form-group">
+								<label  class="col-md-3 control-label"> Event name: </label>
+								<div class="col-md-7">
+									<input type="text" class="form-control" name="Activity[name]" value="<%=name %>" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label  class="col-md-3 control-label"> Organizer: </label>
+								<div class="col-md-7">
+									<select class="form-control" name="Activity[organizer]" id="organizer">
+										<option value="">please choose</option>
+										<option value="Music Society">Music Society</option>
+										<option value="gis">gis</option>
+										<option value="comp">comp</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label  class="col-md-3 control-label"> Date: </label>
+								<div class="col-md-7">
+									<input type="text" class="form-control" id="inputEmail3" name="Activity[date]" value="<%=date %>" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label  class="col-md-3 control-label"> Venue: </label>
+								<div class="col-md-7">
+									<select class="form-control" name="Activity[venue]" id="venue">
+										<option value="">please choose</option>
+										<option value="SWT501">SWT501</option>
+										<option value="RRS638">RRS638</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label  class="col-md-3 control-label"> </label>
+								<div class="col-md-7">
+									<button type="submit" class="btn btn-default">submit</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

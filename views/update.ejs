@@ -1,0 +1,109 @@
+
+<script type="text/javascript">
+$(function(){
+
+var activity="<%=activity%>"
+if(activity!="null")
+{
+	$("#organizer").val("<%=activity.organizer%>");
+	$("#venue").val("<%=activity.venue%>");
+	$("#quota").val("<%=activity.quota%>");
+	
+}
+
+
+
+})
+
+
+</script>
+<div class="container-fluid">
+	<div class="col-md-12">
+		<div class="row">
+			<div class="col-md-12">
+				<h3>Event Update form</h3>
+				<form class="form-horizontal" role="form" method="POST" action="/activity/update">
+					<input type="hidden" class="form-control" name="Activity[id]" value="<%=activity.id%>" />
+					<div class="form-group">
+						<label for="inputName" class="col-md-2 control-label"> Event name: </label>
+						<div class="col-md-10">
+							<input type="text" class="form-control" name="Activity[name]" value="<%=activity.name%>" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="comment" class="col-md-2 control-label">Short Description:</label>
+						<div class="col-md-10">
+							<textarea class="form-control" rows="6" name="Activity[shortDes]"><%=activity.shortDes%></textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="comment" class="col-md-2 control-label">Full Description:</label>
+						<div class="col-md-10">
+							<textarea class="form-control" rows="9" name="Activity[fullDes]"><%=activity.fullDes%></textarea>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label"> Image URL: </label>
+						<div class="col-md-10">
+							<input name="Activity[image]" type="url" class="form-control" value="<%=activity.image%>" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label"> Organizer: </label>
+						<div class="col-md-10">
+							<select class="form-control" name="Activity[organizer]" id="organizer" value="<%=activity.organizer%>">
+								<option value="Music Society">Music Society</option>
+								<option value="gis">gis</option>
+								<option value="comp">comp</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label"> Date: </label>
+						<div class="col-md-10">
+							<input type="Date" class="form-control" name="Activity[date]" value="<%=activity.date%>" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label"> Time: </label>
+						<div class="col-md-10">
+							<input name="Activity[time]" type="Time" class="form-control" value="<%=activity.time%>"></input>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label"> Venue: </label>
+						<div class="col-md-10">
+							<select class="form-control" id="venue" name="Activity[venue]" value="<%=activity.venue%>">
+								<option value="SWT501">SWT501</option>
+								<option value="RRS638">RRS638</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label"> Quota: </label>
+						<div class="col-md-10">
+							<select class="form-control" id="quota" name="Activity[quota]" value="<%=activity.quota%>">
+								<option value="10">10</option>
+								<option value="20">20</option>
+								<option value="30">30</option>
+								<option value="40">40</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label"> Highlighted Event: </label>
+						<div class="col-md-10">
+							<input type="checkbox" value="yes" name="Activity[highLighted]" id="highL">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-md-2 control-label"> </label>
+						<div class="col-md-10">
+							<button type="submit" class="btn btn-default">submit</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
