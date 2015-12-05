@@ -37,7 +37,7 @@
             	activities[i].destroy();
             };
 
-        }); **/
+          }); **/
 
 
            /** Activity.create(body).exec(function (err, activities) {
@@ -67,7 +67,7 @@
             //return res.json(activities);
             return res.view('main', {'activities': activities});
 
-        });
+          });
  	},
 
 
@@ -86,248 +86,374 @@
 
  	create: function(req, res) {
 
+     var id=req.session.user.id;
+     if (req.method == "POST") {
 
- 		if (req.method == "POST") {
+      Activity.create(req.body.Activity).exec( function(err, activity) {
+        console.log(activity.id);
 
- 			Activity.create(req.body.Activity).exec( function(err, activity) {
+       //add relationship
+        User.findOne(id).exec( function (err, model) {
 
- 				return res.view("create",{"addSuccess":"added Successfully"});
+          if (model !== null) {
+            model.regists.add(activity.id);  
 
- 			});
- 		}
+            model.save( function (err, model) {
 
- 		else{
+              if (err) 
+                return res.send("Already Created");
+
+            });
+          }
+          else {
+            return res.send("User not found!");
+          }
+        })
 
 
- 			return res.view("create", {"addSuccess":""});
- 		}
 
- 	},
+        return res.view("create",{"addSuccess":"added Successfully"});
+
+      });
+    }
+
+    else{
+
+
+      return res.view("create", {"addSuccess":""});
+    }
 
 
 
 
- 	search: function(req, res) {
+
+  },
+
+
+
+
+  search: function(req, res) {
     var name=req.query.name;
     var venue=req.query.venue;
     var organizer=req.query.organizer;
     var date=req.query.date;
     if (name==undefined) {name=""};
-     if (venue==undefined) {venue=""};
-      if (organizer==undefined) {organizer=""};
-       if (date==undefined) {date=""};
+    if (venue==undefined) {venue=""};
+    if (organizer==undefined) {organizer=""};
+    if (date==undefined) {date=""};
     var queryString="";
- 		if (req.method == "GET"){
+    if (req.method == "GET"){
 
 
 
- 			 Activity.find().paginate({page: req.query.page, limit: 2})
+     Activity.find().paginate({page: req.query.page, limit: 2})
+     .where({name: {contains: name}})
+     .where({venue: {contains: venue}})
+     .where({organizer: {contains: organizer}})
+     .where({date: {contains: date}})
+     .sort('name')
+     .exec( function(err, activities) {
+
+      Activity.count()
       .where({name: {contains: name}})
       .where({venue: {contains: venue}})
       .where({organizer: {contains: organizer}})
       .where({date: {contains: date}})
-      .sort('name')
-      .exec( function(err, activities) {
+      .exec( function(err, value) {
 
-        Activity.count()
-        .where({name: {contains: name}})
-       .where({venue: {contains: venue}})
-       .where({organizer: {contains: organizer}})
-       .where({date: {contains: date}})
-        .exec( function(err, value) {
+        var pages = Math.ceil(value / 2 );
 
-          var pages = Math.ceil(value / 2 );
-
-          queryString="name="+name+"&venue="+venue+"&organizer="+organizer+"&date="+date
-          console.log(queryString);
-          return res.view( 'search', 
-            {'activities': activities, 
-             'count':pages, 
-             'current':req.query.page,
-             'name':req.query.name,
-             'venue':req.query.venue,
-              'organizer':req.query.organizer,
-             'date':req.query.date,
-             'queryString':queryString
-
-           });
+        queryString="name="+name+"&venue="+venue+"&organizer="+organizer+"&date="+date
+        console.log(queryString);
+        return res.view( 'search', 
+          {'activities': activities, 
+          'count':pages, 
+          'current':req.query.page,
+          'name':req.query.name,
+          'venue':req.query.venue,
+          'organizer':req.query.organizer,
+          'date':req.query.date,
+          'queryString':queryString
 
         });
 
       });
-      
- 	
-       }
 
-       else
- 		{ 
+    });
 
-       
- 			Activity.find().paginate({page: req.query.page, limit: 2})
-      .where({name: {contains: req.body.Activity.name}})
-      .where({venue: {contains: req.body.Activity.venue}})
-      .where({organizer: {contains: req.body.Activity.organizer}})
-      .where({date: {contains: req.body.Activity.date}})
-      .sort('name')
- 			.exec( function(err, activities) {
 
- 				Activity.count()
-        .where({name: {contains: req.body.Activity.name}})
-        .where({venue: {contains: req.body.Activity.venue}})
-        .where({organizer: {contains: req.body.Activity.organizer}})
-        .where({date: {contains: req.body.Activity.date}})
-        .exec( function(err, value) {
+   }
 
- 					var pages = Math.ceil(value / 2 );
+   else
+   { 
 
-          queryString="name="+req.body.Activity.name+"&venue="+req.body.Activity.venue+"&organizer="+req.body.Activity.organizer+"&date="+req.body.Activity.date
- 					return res.view( 'search', 
- 						{'activities': activities, 
-             'count':pages, 
-             'current':req.query.page,
-             'name':req.body.Activity.name,
-             'venue':req.body.Activity.venue,
-              'organizer':req.body.Activity.organizer,
-             'date':req.body.Activity.date,
-             'queryString':queryString
 
-           });
+    Activity.find().paginate({page: req.query.page, limit: 2})
+    .where({name: {contains: req.body.Activity.name}})
+    .where({venue: {contains: req.body.Activity.venue}})
+    .where({organizer: {contains: req.body.Activity.organizer}})
+    .where({date: {contains: req.body.Activity.date}})
+    .sort('name')
+    .exec( function(err, activities) {
 
- 				});
+     Activity.count()
+     .where({name: {contains: req.body.Activity.name}})
+     .where({venue: {contains: req.body.Activity.venue}})
+     .where({organizer: {contains: req.body.Activity.organizer}})
+     .where({date: {contains: req.body.Activity.date}})
+     .exec( function(err, value) {
 
- 			});
- 			
- 				
+      var pages = Math.ceil(value / 2 );
 
- 		}
+      queryString="name="+req.body.Activity.name+"&venue="+req.body.Activity.venue+"&organizer="+req.body.Activity.organizer+"&date="+req.body.Activity.date
+      return res.view( 'search', 
+       {'activities': activities, 
+       'count':pages, 
+       'current':req.query.page,
+       'name':req.body.Activity.name,
+       'venue':req.body.Activity.venue,
+       'organizer':req.body.Activity.organizer,
+       'date':req.body.Activity.date,
+       'queryString':queryString
 
- 	},
+     });
+
+    });
+
+   });
 
 
 
+  }
 
+},
 
 
 
 
- 	admin: function(req, res) {
-
- 		Activity.find().exec( function(err, activities) {
-
- 			return res.view('admin',{"activities":activities});
- 			
 
 
- 		});
 
- 	},
 
- 	detail: function(req, res) {
+admin: function(req, res) {
 
- 		Activity.findOne(req.query.id).exec( function(err, model) {
+
+ var type=req.session.user.type;
+ var id=req.session.user.id;
+ if(type!="admin")
+ {
+ User.findOne(id).populateAll().exec( function (err, model) {
+
+  return res.view("admin",{"user":model});
+
+});
+}
+
+else
+{
+
+ console.log(type+"-----------------");
+ Activity.find().exec( function(err, activities) {
+
+  return res.view('adminForAdministrator',{"activities":activities});
+
+});
+
+}
+
+},
+
+
+
+detail: function(req, res) {
+
+ Activity.findOne(req.query.id).exec( function(err, model) {
    			        //return res.json(model);
 
    			        return res.view('detail', {'activity': model});
 
-   			    });
+              });
 
- 	},
+},
 
 
 
- 	edit: function(req, res)
- 	{
+edit: function(req, res)
+{
 
- 		Activity.findOne(req.query.id).exec( function(err, model) {
+ Activity.findOne(req.query.id).exec( function(err, model) {
    			        //return res.json(model);
 
                 if(model!=null)
                 {
-   			        return res.view('update', {'activity': model});
+                  return res.view('update', {'activity': model});
                 }
                 return res.send("No such record");
 
-   			    });
+              });
 
- 	},
+},
 
 
 
- 	update: function(req, res) {
+update: function(req, res) {
 
- 		if (req.method == "GET") {
+ if (req.method == "GET") {
 
- 			Activity.findOne(req.params.id).exec( function(err, model) {
+  Activity.findOne(req.params.id).exec( function(err, model) {
 
- 				if (model == null) 
- 					return res.send("No such activity!");
- 				else
- 					return res.view('update', {'activity': model});
+   if (model == null) 
+    return res.send("No such activity!");
+  else
+    return res.view('update', {'activity': model});
 
- 			});
+});
 
- 		} else {
+} else {
 
- 			Activity.findOne(req.body.Activity.id).exec( function(err, model) {
+  Activity.findOne(req.body.Activity.id).exec( function(err, model) {
 
- 				model.name = req.body.Activity.name;
- 				model.venue = req.body.Activity.venue;
- 				model.date = req.body.Activity.date;
- 				model.time = req.body.Activity.time;
- 				model.image = req.body.Activity.image;
- 				model.shorDes = req.body.Activity.shorDes;
- 				model.fullDes = req.body.Activity.fullDes;
- 				model.organizer = req.body.Activity.organizer;
- 				model.quota = req.body.Activity.quota;
- 				model.highLighted = req.body.Activity.highLighted;
+   model.name = req.body.Activity.name;
+   model.venue = req.body.Activity.venue;
+   model.date = req.body.Activity.date;
+   model.time = req.body.Activity.time;
+   model.image = req.body.Activity.image;
+   model.shorDes = req.body.Activity.shorDes;
+   model.fullDes = req.body.Activity.fullDes;
+   model.organizer = req.body.Activity.organizer;
+   model.quota = req.body.Activity.quota;
+   model.highLighted = req.body.Activity.highLighted;
 
- 				model.save();
+   model.save();
  				//return res.json(model);
  				return res.view('update', {'activity': model});
 
  			});
 
- 		}
+}
 
- 	},
-
-
- 	delete: function(req, res) {
-
- 		Activity.findOne(req.query.id).exec( function(err, model) {
-
- 			if (model != null) {
- 				model.destroy();
- 				Activity.find().exec( function(err, activities) {
-
- 					return res.view('admin',{"activities":activities});
-
- 				});
- 				
- 			} else {		
- 				return res.send("Person not found");
- 			}
-
- 		});
-
- 	},
+},
 
 
+delete: function(req, res) {
+ var id=req.session.user.id;
+ Activity.findOne(req.query.id).exec( function(err, model) {
 
- 	test: function(req, res) {
+  if (model != null) {
+   model.destroy();
 
- 		Activity.find().exec( function(err, activities) {
+   User.findOne(id).populateAll().exec( function (err, model) {
 
- 			return res.view('test');
- 			
+  return res.view("admin",{"user":model});
+
+});
 
 
- 		});
+ } else {		
+   return res.send("Person not found");
+ }
 
- 	},
+});
+
+},
 
 
 
+registerOne: function (req, res) {
 
- };
+ var id=req.session.uid;
+ if(id==null || id=="undefined")
+  return res.send("please login first")
+
+ User.findOne(id).exec( function (err, model) {
+
+  if (model !== null) {
+    model.regists.add(req.body.id);
+    console.log(req.body.id);
+    model.save( function (err, model) {
+
+      if (err) 
+        return res.send("Already added");
+
+      return res.send("registed Successfully");
+
+    });
+  }
+  else {
+    return res.send("User not found!");
+  }
+})
+},
+
+
+
+removeActivity: function (req, res) {
+
+  var id=req.session.user.id;
+  console.log(id);
+  User.findOne(id).exec( function (err, model) {
+
+    if (model !== null) {
+      model.regists.remove(req.query.aid)
+      model.save();
+
+
+
+
+      return res.send("Unregised Successfully");
+
+      
+    }
+    else {
+      return res.send("User not found!");
+    }
+  })
+
+},
+
+
+
+showRegister: function (req, res) {
+
+  Activity.findOne(req.query.id).populateAll().exec( function (err, model) {
+
+    return res.view("registedUsers",{"activity":model});
+
+  })
+},
+
+
+showRegistedActivities: function (req, res) {
+
+  User.findOne(req.query.id).populateAll().exec( function (err, model) {
+
+    return res.view("registedActivities",{"user":model});
+
+  })
+},
+
+
+
+
+
+
+
+
+
+test: function(req, res) {
+
+ Activity.find().exec( function(err, activities) {
+
+  return res.view('test');
+
+
+
+});
+
+},
+
+
+
+
+};
 

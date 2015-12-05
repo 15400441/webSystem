@@ -4,12 +4,12 @@
 			<div class="col-md-12">
 				<table class="table">
 					<tbody>
-						<% activities.forEach( function(model) { %>
+						<% user.regists.forEach( function(model) { %>
 						<tr>
 							<td></td>
 							<td><%=model.name%></td>
 							<td></td>
-							<td></td>
+							<td><a href="/activity/showRegister?id=<%=model.id%>">Registration</td>
 							<td><a href="/activity/edit?id=<%=model.id%>"> Edit</a></td>
 							<td><a href="/activity/delete?id=<%=model.id%>"> Delete</a></td>
 						</tr>

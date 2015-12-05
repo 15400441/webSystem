@@ -39,7 +39,21 @@
 
   <script src="/js/jquery-2.1.4.min.js"></script>
    <script src="/js/jqPaginator.js"></script>
+
+
   </head>
+   <script type="text/javascript">
+ 
+ $(function(){
+
+ 
+  
+
+ });
+
+ 
+</script>
+
 
   <body>
 
@@ -56,12 +70,35 @@
         <li>
           <a href="/activity/search">Search</a>
         </li>
+         <% if(session.user!=null) { %>
+         <li>
+          <a href="/activity/showRegistedActivities?id=<%=session.user.id%> ">My Registered Events</a>
+
+        </li>
+        <% } %>
         <li >
           <a href="/activity/create">Create</a>
         </li>
         <li >
           <a href="/activity/admin">Admin</a>
         </li>
+         <li >
+          <a href="/user/login">Login</a>
+        </li>
+
+        <% if(session.user!=null) {  %>
+         <li >
+          <a href="/user/loginOut">Loginout</a>
+        </li>
+        <li >
+          <a href="#">Hi,<%=session.user.username%></a>
+        </li>
+        
+         <%  } %>
+
+        
+
+
         
       </ul>
       <div class="jumbotron">
@@ -138,8 +175,6 @@
 
     <!--SCRIPTS-->
     <script src="/js/dependencies/sails.io.js"></script>
-    <script src="/js/jqPaginator.js"></script>
-    <script src="/js/jquery-2.1.4.min.js"></script>
     <!--SCRIPTS END-->
 
    

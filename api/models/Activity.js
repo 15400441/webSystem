@@ -8,10 +8,10 @@
 module.exports = {
 
   attributes: {
-  	organizer: {
-      type: 'string',
-      defaultsTo: ''
-    },
+  	 belongsTo: {
+        collection: 'User',
+        via: 'regists'
+    }
 
   }
 };

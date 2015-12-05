@@ -18,6 +18,16 @@
 
 
 module.exports.policies = {
+  ActivityController: {
+
+    create: 'isAdmin',
+    admin:'isAdmin',
+    edit:'isAdmin',
+    update:'isAdmin',
+    delete:'isAdmin',
+    
+
+  }
 
   /***************************************************************************
   *                                                                          *
