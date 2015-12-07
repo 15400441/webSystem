@@ -11,7 +11,11 @@
    login: function (req, res) {
 
     if (req.method == "GET")
+    {
+        
         return res.view('login');
+
+    }
     else {
 
         User.findOne({username:req.body.username})
@@ -24,6 +28,7 @@
                 return res.send("Wrong Password");
 
             req.session.username = req.body.username; 
+            req.session.password=req.body.password;
             req.session.user = user; 
              req.session.uid = user.id; 
             res.locals.session = req.session
@@ -129,6 +134,54 @@ regist: function (req, res) {
             
 
         });
+    },
+
+
+     userInfo: function(req, res) {
+
+            return res.view("userInfo");
+        
+    },
+
+
+     changePasswordUI: function(req, res) {
+
+            return res.view("changePasswordUI");
+            
+    },
+
+
+    changePassword: function(req, res) {
+            var oldPassword=req.body.oldPassword;
+            var newPassword=req.body.newPassword;
+            var password= req.session.password;
+            console.log(oldPassword);
+            console.log(password);
+             console.log(newPassword);
+
+            if(oldPassword != password)
+            {
+                return res.send("old password not correct");
+            }
+
+            else{
+
+               User.findOne(req.session.user.id).exec( function(err, u) {
+                u.password=newPassword;
+                u.save();
+
+                req.session=null;
+
+               return res.view("login");
+            
+
+        });
+
+
+            }
+           
+            
+       
     },
 
 

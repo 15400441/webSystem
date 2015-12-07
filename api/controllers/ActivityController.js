@@ -369,6 +369,21 @@ registerOne: function (req, res) {
 
   if (model !== null) {
     model.regists.add(req.body.id);
+
+    Activity.findOne(req.body.id).exec( function (err, m) {
+           if(m.quota>=1)
+           {
+           m.quota=m.quota-1;
+           m.save();
+         }
+         else
+         {
+          return res.send("no quota");
+         }
+
+    });
+
+
     console.log(req.body.id);
     model.save( function (err, model) {
 
@@ -397,7 +412,11 @@ removeActivity: function (req, res) {
       model.regists.remove(req.query.aid)
       model.save();
 
-
+       Activity.findOne(req.query.aid).exec( function (err, m) {
+           
+           m.quota=m.quota+1;
+           m.save();
+    });
 
 
       return res.send("Unregised Successfully");
@@ -412,9 +431,39 @@ removeActivity: function (req, res) {
 },
 
 
+deleteRegister : function (req, res) {
+
+  var uid=req.query.uid;
+  
+  User.findOne(uid).exec( function (err, model) {
+
+    if (model !== null) {
+      model.regists.remove(req.session.aid)
+      model.save();
+
+
+    Activity.findOne(req.session.aid).populateAll().exec( function (err, m) {
+    
+    m.quota=m.quota+1;
+    return res.view("registedUsers",{"activity":m});
+
+  });
+
+      
+    }
+    else {
+      return res.send("User not found!");
+    }
+  })
+
+},
+
+
+
 
 showRegister: function (req, res) {
 
+  req.session.aid=req.query.id;
   Activity.findOne(req.query.id).populateAll().exec( function (err, model) {
 
     return res.view("registedUsers",{"activity":model});

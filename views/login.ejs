@@ -1,5 +1,7 @@
+
+
 <form class="form-signin col-md-4 col-md-offset-4" action="/user/login" 
-        method="POST">
+        method="POST" onsubmit="return checkForm();">
     <h2 class="form-signin-heading">Please sign in</h2>
 
    
@@ -10,7 +12,15 @@
     <input type="password" id="inputPassword" class="form-control" 
         placeholder="Password" required name="password">
     
-    <br>    
+    <br>  
+
+     Check code:<a href="javascript:valid()" id="valid"><a> 
+     <input type="text" id="validCode" class="form-control" 
+        placeholder="Check Code" required name="validCode">
+    
+     <br> 
+
+
     <button class="btn btn-lg btn-primary btn-block" type="submit">
         Sign in</button>
         <br>
@@ -19,3 +29,36 @@
 
 
  </form>
+
+ <script type="text/javascript">
+
+var code="";
+function valid()
+  {
+     code="";
+     for(i=1;i<=4;i++)
+     {
+        code=code+Math.floor(Math.random()*10);
+     }
+     
+     
+     document.getElementById("valid").innerHTML=code;
+  }
+
+  valid();
+
+
+
+function checkForm(){
+        
+        var validCode = document.getElementById("validCode").value;
+        if(validCode != code){
+            alert("wrong valid code");
+            return false;
+           
+        }
+       
+    }
+
+
+</script>
